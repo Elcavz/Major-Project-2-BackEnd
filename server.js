@@ -58,6 +58,24 @@ app.post('/login', function(req, res) {
     });
 });
 
+app.post('/students', function(req,res) {
+    const firstName = req.body.firstname;
+    const lastName = req.body.lastname;
+    const age = req.body.age;
+    const gender = req.body.gender;
+    const contactNo = req.body.contactnumber;
+    const address = req.body.address;
+
+    con.query(existingUsername , function (err, usernameValue) {
+        if (err) throw err;
+        const myQuery = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${userNameFE}" , "${emailFE}" , "${hashedPassword}")`
+        con.query(myQuery, function (err) {
+            if (err) throw err;
+            res.send({"success": true})
+        });
+    });
+});
+
 con.connect(function(err) {
     if (err) throw err;
     console.log('MYSQL DB CONNECTION SUCCESS!')
