@@ -66,20 +66,28 @@ app.post('/students', function(req,res) {
     const contactNo = req.body.contactnumber;
     const address = req.body.address;
 
-    const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${contactNo}" , "${address}")`
+    const phoneDuplicate = `SELECT * FROM project_database.students WHERE ContactNumber = ${contactNo}`;
 
-    con.query(studentsRegistration , function (err) {
+    con.query(phoneDuplicate , (err, phoneResult) => {
         if (err) throw err;
+        console.log(phoneResult)
+        if (phoneResult == '') {
+            const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${contactNo}" , "${address}")`
 
-        
-        res.send({success: true})
-    });
+            con.query(studentsRegistration , function (err) {
+                if (err) throw err;
+                res.send({success: true})
+             });
+        } else {
+            res.send({success: false})
+        }
+    })
 });
 
 app.post('/validation' , function(req,res) {
     const contactNo = req.body.contactnumber;
 
-    const studentValidation = `SELECT * FROM project_database.students WHERE ContactNumber = "${contactNo}"`;
+    const studentValidation = `SELECT * FROM project_database.students WHERE ContactNumber = ${contactNo}`;
 
     con.query(studentValidation, function(err, result) {
         if (err) throw err;
