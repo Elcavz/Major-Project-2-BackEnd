@@ -66,15 +66,27 @@ app.post('/students', function(req,res) {
     const contactNo = req.body.contactnumber;
     const address = req.body.address;
 
-    con.query(existingUsername , function (err, usernameValue) {
+    const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${contactNo}" , "${address}")`
+
+    con.query(studentsRegistration , function (err) {
         if (err) throw err;
-        const myQuery = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${userNameFE}" , "${emailFE}" , "${hashedPassword}")`
-        con.query(myQuery, function (err) {
-            if (err) throw err;
-            res.send({"success": true})
-        });
+
+        
+        res.send({success: true})
     });
 });
+
+app.post('/validation' , function(req,res) {
+    const contactNo = req.body.contactnumber;
+
+    const studentValidation = `SELECT * FROM project_database.students WHERE ContactNumber = "${contactNo}"`;
+
+    con.query(studentValidation, function(err, result) {
+        if (err) throw err;
+        console.log(result[0].StudentId)
+        res.send({idresult: result[0].StudentId})
+    })
+})
 
 con.connect(function(err) {
     if (err) throw err;
