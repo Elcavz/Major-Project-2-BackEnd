@@ -96,6 +96,59 @@ app.post('/validation' , function(req,res) {
     })
 })
 
+app.post('/totalboys', function(req, res) {
+    const totalBoys = `SELECT COUNT(*) As count FROM project_database.students WHERE Gender = 'Male'`
+
+    con.query(totalBoys, function(err, result) {
+        if (err) throw err;
+        console.log(result[0].count);
+        if (result.length === 0) {
+            res.json({ TotalBoys: 0 })
+        } else (
+            res.json({ TotalBoys: result[0].count })
+        )
+    });
+});
+
+app.post('/totalgirls', function(req, res) {
+    const totalBoys = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Female'`
+
+    con.query(totalBoys, function(err, result) {
+        if (err) throw err;
+        console.log(result[0].count);
+        if (result.length === 0) {
+            res.json({ TotalGirls: 0 })
+        } else (
+            res.json({ TotalGirls: result[0].count })
+        )
+    });
+});
+
+app.post('/totalstudents', function(req, res) {
+    const totalStudents = `SELECT COUNT(*) AS count FROM project_database.students GROUP BY Gender`
+
+    con.query(totalStudents, function(err, result) {
+        if (err) throw err;
+        console.log(result);
+
+        if (result.length === 0) {
+            res.json({ TotalStudents: 0})
+        } else (
+            res.json({ TotalStudents: result.length})
+        )
+    });
+});
+
+app.post('/allstudents', function(req,res) {
+    const allStudents = `SELECT * FROM project_database.students`
+
+    con.query(allStudents, function(err, result) {
+        if (err) throw err;
+        console.log(result);
+        res.json({All: result[0].Age})
+    })
+})
+
 con.connect(function(err) {
     if (err) throw err;
     console.log('MYSQL DB CONNECTION SUCCESS!')
