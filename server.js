@@ -151,54 +151,23 @@ app.post('/validation' , function(req,res) {
     })
 })
 
-app.post('/totalboys', function(req, res) {
-    const totalBoys = `SELECT COUNT(*) As count FROM project_database.students WHERE Gender = 'Male'`
+app.post('/students-count', function(req, res) {
+    const totalBoysQuery = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Male'`;
+    const totalGirlsQuery = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Female'`;
 
-    con.query(totalBoys, function(err, result) {
+    con.query(totalBoysQuery, function(err, totalBoysResult) {
         if (err) throw err;
-        if (result.length === 0) {
-            res.json({ TotalBoys: 0 })
-        } else (
-            res.json({ TotalBoys: result[0].count })
-        )
+
+        con.query(totalGirlsQuery, function(err, totalGirlsResult) {
+            if (err) throw err;
+
+            const totalBoysCount = totalBoysResult.length > 0 ? totalBoysResult[0].count : 0;
+            const totalGirlsCount = totalGirlsResult.length > 0 ? totalGirlsResult[0].count : 0;
+            console.log('TotalBoys', totalBoysCount, 'TotalGirls', totalGirlsCount)
+            res.json({ TotalBoys: totalBoysCount, TotalGirls: totalGirlsCount });
+        });
     });
 });
-
-app.post('/totalgirls', function(req, res) {
-    const totalBoys = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Female'`
-
-    con.query(totalBoys, function(err, result) {
-        if (err) throw err;
-        if (result.length === 0) {
-            res.json({ TotalGirls: 0 })
-        } else (
-            res.json({ TotalGirls: result[0].count })
-        )
-    });
-});
-
-// app.post('/totalstudents', function(req, res) {
-//     const totalStudents = `SELECT
-//         CASE WHEN gender = 'male' THEN 'Male'
-//             WHEN gender = 'female' THEN 'Female'
-//             WHEN gender = 'other' THEN 'Other'
-//             ELSE 'Unknown'
-//         END as gender,
-//         COUNT(*) as gender_count
-//         FROM students
-//         GROUP BY gender;`
-
-//     con.query(totalStudents, function(err, result) {
-//         if (err) throw err;
-//         console.log(result[0].gender_count + result[1].gender_count)
-//         const genderCount = result[0].gender_count + result[1].gender_count
-//         if (result.length === 0) {
-//             res.json({ TotalStudents: 0})
-//         } else (
-//             res.json({ TotalStudents: genderCount})
-//         )
-//     });
-// });
 
 app.post('/allstudents', function(req,res) {
     const allStudents = `SELECT * FROM project_database.students`
