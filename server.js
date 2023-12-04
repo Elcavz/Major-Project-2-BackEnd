@@ -27,6 +27,7 @@ app.post('/register', function(req,res) {
         const existingUsername = `SELECT * FROM project_database.users WHERE username = "${userNameFE}"`;
         con.query(existingUsername , function (err, usernameValue) {
             if (err) throw err;
+            console.log(usernameValue)
             if (usernameValue == "") {
                 const myQuery = `INSERT INTO project_database.users (Username , Email , Password) VALUES ("${userNameFE}" , "${emailFE}" , "${hashedPassword}")`
                 con.query(myQuery, function (err) {
@@ -109,7 +110,6 @@ app.get('/admin', function(req,res) {
         res.json({'success': true, result: decoded})
     }
     } catch(err) {
-    // err
         res.json({'success': false})
     }
 })
