@@ -52,7 +52,7 @@ app.post('/login', function(req, res) {
             const passwordFE = req.body.password;
             const matched = bcrypt.compareSync(passwordFE, result[0].password);
             if (matched) {
-                const token = jwt.sign({id: result[0].idusers, username: userNameFE, email: result[0].email}, 'ito ang aking key' , { expiresIn: '1h' });
+                const token = jwt.sign({id: result[0].idusers, username: userNameFE, email: result[0].email}, 'ito ang aking key' , { expiresIn: '12h' });
                 console.log('token: ', token)
                 res.json({"success": true, token: token});
             } else {
@@ -114,11 +114,21 @@ app.get('/admin', function(req,res) {
     }
 })
 
+app.get('/show-students', function(req, res) {
+    const showStudents = `SELECT * FROM project_database.students`;
+
+    con.query(showStudents, function(err, result) {
+        if (err) throw err;
+        res.json({students: result})
+    })
+})
+
 app.post('/students', function(req,res) {
     const firstName = req.body.firstname;
     const lastName = req.body.lastname;
     const age = req.body.age;
     const gender = req.body.gender;
+    const grade = req.body.grade;
     const contactNo = req.body.contactnumber;
     const address = req.body.address;
 
@@ -128,7 +138,7 @@ app.post('/students', function(req,res) {
         if (err) throw err;
         console.log(phoneResult)
         if (phoneResult == '') {
-            const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${contactNo}" , "${address}")`
+            const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , Grade , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${grade}" , "${contactNo}" , "${address}")`
 
             con.query(studentsRegistration , function (err) {
                 if (err) throw err;
