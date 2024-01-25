@@ -131,6 +131,7 @@ app.post('/students', function(req,res) {
     const grade = req.body.grade;
     const contactNo = req.body.contactnumber;
     const address = req.body.address;
+    const dateEnrolled = req.body.date;
 
     const phoneDuplicate = `SELECT * FROM project_database.students WHERE ContactNumber = ${contactNo}`;
 
@@ -138,7 +139,7 @@ app.post('/students', function(req,res) {
         if (err) throw err;
         console.log(phoneResult)
         if (phoneResult == '') {
-            const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , Grade , ContactNumber , Address) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${grade}" , "${contactNo}" , "${address}")`
+            const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , Grade , ContactNumber , Address , Date_Enrolled) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${grade}" , "${contactNo}" , "${address}" , "${dateEnrolled}")`
 
             con.query(studentsRegistration , function (err) {
                 if (err) throw err;
@@ -157,7 +158,8 @@ app.post('/validation' , function(req,res) {
 
     con.query(studentValidation, function(err, result) {
         if (err) throw err;
-        res.json({idresult: result[0].StudentId})
+        console.log(result)
+        res.json({idresult: result[0].StudentId , grade: result[0].Grade})
     })
 })
 
