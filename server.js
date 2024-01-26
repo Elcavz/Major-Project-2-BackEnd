@@ -123,6 +123,24 @@ app.get('/show-students', function(req, res) {
     })
 })
 
+app.get('/boy-students', function(req, res) {
+    const showStudents = `SELECT * FROM project_database.students where Gender = "male"`;
+
+    con.query(showStudents, function(err, result) {
+        if (err) throw err;
+        res.json({students: result})
+    })
+})
+
+app.get('/girl-students', function(req, res) {
+    const showStudents = `SELECT * FROM project_database.students where Gender = "female"`;
+
+    con.query(showStudents, function(err, result) {
+        if (err) throw err;
+        res.json({students: result})
+    })
+})
+
 app.post('/students', function(req,res) {
     const firstName = req.body.firstname;
     const lastName = req.body.lastname;
@@ -164,10 +182,10 @@ app.post('/validation' , function(req,res) {
 })
 
 app.post('/students-count', function(req, res) {
-    const totalBoysQuery = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Male'`;
+    const gradeLevel1 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Male'`;
     const totalGirlsQuery = `SELECT COUNT(*) AS count FROM project_database.students WHERE Gender = 'Female'`;
 
-    con.query(totalBoysQuery, function(err, totalBoysResult) {
+    con.query(gradeLevel1, function(err, totalBoysResult) {
         if (err) throw err;
 
         con.query(totalGirlsQuery, function(err, totalGirlsResult) {
@@ -180,6 +198,44 @@ app.post('/students-count', function(req, res) {
         });
     });
 });
+
+app.get('/grade-count', function(req, res) {
+    const gradeLevel1 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '1'`;
+    const gradeLevel2 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '2'`;
+    const gradeLevel3 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '3'`;
+    const gradeLevel4 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '4'`;
+    const gradeLevel5 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '5'`;
+    const gradeLevel6 = `SELECT COUNT(*) AS count FROM project_database.students WHERE Grade = '6'`;
+
+    const response = {};
+
+    con.query(gradeLevel1, function(err, gradeLevel1Result) {
+        response.GradeLevel1 = gradeLevel1Result[0].count;
+
+        con.query(gradeLevel2, function(err, gradeLevel2Result) {
+            response.GradeLevel2 = gradeLevel2Result[0].count;
+
+            con.query(gradeLevel3, function(err, gradeLevel3Result) {
+                response.GradeLevel3 = gradeLevel3Result[0].count;
+
+                con.query(gradeLevel4, function(err, gradeLevel4Result) {
+                    response.GradeLevel4 = gradeLevel4Result[0].count;
+
+                    con.query(gradeLevel5, function(err, gradeLevel5Result) {
+                        response.GradeLevel5 = gradeLevel5Result[0].count;
+
+                        con.query(gradeLevel6, function(err, gradeLevel6Result) {
+                            response.GradeLevel6 = gradeLevel6Result[0].count;
+                            
+                            res.json(response);
+                        });
+                    });
+                });
+            });
+        });
+    });
+});
+
 
 app.post('/allstudents', function(req,res) {
     const allStudents = `SELECT * FROM project_database.students`
