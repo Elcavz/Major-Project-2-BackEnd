@@ -27,7 +27,6 @@ app.post('/register', function(req,res) {
         const existingUsername = `SELECT * FROM project_database.users WHERE username = "${userNameFE}"`;
         con.query(existingUsername , function (err, usernameValue) {
             if (err) throw err;
-            console.log(usernameValue)
             if (usernameValue == "") {
                 const myQuery = `INSERT INTO project_database.users (Username , Email , Password) VALUES ("${userNameFE}" , "${emailFE}" , "${hashedPassword}")`
                 con.query(myQuery, function (err) {
@@ -53,7 +52,6 @@ app.post('/login', function(req, res) {
             const matched = bcrypt.compareSync(passwordFE, result[0].password);
             if (matched) {
                 const token = jwt.sign({id: result[0].idusers, username: userNameFE, email: result[0].email}, 'ito ang aking key' , { expiresIn: '12h' });
-                console.log('token: ', token)
                 res.json({"success": true, token: token});
             } else {
                 res.json({'success': false, 'error': 'Invalid Credentials'})
@@ -106,7 +104,6 @@ app.get('/admin', function(req,res) {
     if (authorizationHeader !== 'undefined') {
         const token = authorizationHeader.split(' ')[1];
         const decoded = jwt.verify(token, 'ito ang aking key');
-        console.log(decoded)
         res.json({'success': true, result: decoded})
     }
     } catch(err) {
@@ -155,7 +152,6 @@ app.post('/students', function(req,res) {
 
     con.query(phoneDuplicate , (err, phoneResult) => {
         if (err) throw err;
-        console.log(phoneResult)
         if (phoneResult == '') {
             const studentsRegistration = `INSERT INTO project_database.students (FirstName , LastName , Age , Gender , Grade , ContactNumber , Address , Date_Enrolled) VALUES ("${firstName}" ,"${lastName}" ,"${age}" ,"${gender}" , "${grade}" , "${contactNo}" , "${address}" , "${dateEnrolled}")`
 
@@ -176,7 +172,6 @@ app.post('/validation' , function(req,res) {
 
     con.query(studentValidation, function(err, result) {
         if (err) throw err;
-        console.log(result)
         res.json({idresult: result[0].StudentId , grade: result[0].Grade})
     })
 })
@@ -193,7 +188,6 @@ app.post('/students-count', function(req, res) {
 
             const totalBoysCount = totalBoysResult.length > 0 ? totalBoysResult[0].count : 0;
             const totalGirlsCount = totalGirlsResult.length > 0 ? totalGirlsResult[0].count : 0;
-            console.log('TotalBoys', totalBoysCount, 'TotalGirls', totalGirlsCount)
             res.json({ TotalBoys: totalBoysCount, TotalGirls: totalGirlsCount });
         });
     });
